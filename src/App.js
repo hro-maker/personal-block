@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Mainpage from './pages/main/main';
+import './app.scss';
+import TextPage from './pages/textPage/textpage';
+import {Switch,Route, Redirect} from "react-router-dom";
+import Profile from './pages/profie/profile';
+import Reset from './pages/reset/reset';
+import SearchPage from './pages/searchpage/searchpage';
+import Userlist from './pages/users/our-users';
+import { connect } from 'react-redux';
+import { PageLoaded } from './redux/action/auth';
+function App({login,PageLoaded}) {
+  PageLoaded();
+  let routes=(
+    <>
+      <Route path="/profile"  > <Profile/> </Route>
+      <Route exact path="/"  > <Reset/> </Route>
+      <Redirect to="/" />
+    </>
+)
 
-function App() {
+            if(login){
+               routes=(
+                <>
+                <Route exact path="/" > <Mainpage/> </Route>
+                <Route path="/text"  ><TextPage/></Route>
+                <Route path="/search"  > <SearchPage/> </Route>
+                <Route path="/users"  > <Userlist/> </Route>
+                <Redirect to="/" />
+                </>
+              )
+            }
+         
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="wraper">
+        <Switch>
+        {routes}
+        </Switch>
+        
+       
+     
+      </div>
+     
+
     </div>
   );
 }
-
-export default App;
+const mapstatetoprops=(state)=>{
+  return{
+    login:state.AuthReducer.login
+  }
+}
+const mapdispachToProps={
+  PageLoaded
+}
+export default connect( mapstatetoprops,mapdispachToProps)( App);
